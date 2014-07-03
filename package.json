@@ -1,0 +1,39 @@
+{
+	"name": "mysql-mapper",
+	"description": "mysql mapper",
+	"version": "0.0.1",
+	"author": "lvyuanjiao <lvyuanjiao@gmail.com>",
+	"contributors": [
+		{
+		  "name": "Lv yuanjiao",
+		  "email": "lvyuanjiao@gmail.com"
+		}
+	],
+	"homepage": "",
+	"repository": {
+		"type": "git",
+		"url": ""
+	},
+	"keywords": [		
+		"mysql",
+		"mapper",
+		"template",
+		"database"
+	],
+	"engines": {
+		"node": "*"
+	},
+	"scripts": {
+		"test": "mocha"
+	},
+	"dependencies": {
+		"async": "*",
+		"mysql": "*",
+		"sql-mapper": "*"
+	},
+	"devDependencies": {
+		"mocha": "*",
+		"should": "*"
+	},
+	"readmeFilename": "README.md"
+}

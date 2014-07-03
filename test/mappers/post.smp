@@ -1,0 +1,36 @@
+
+{#selectAll}
+	SELECT * FROM post
+{/#selectAll}
+
+
+{#selectById id}
+
+	SELECT * FROM post 
+	{@where}
+		{@if test="#id"}
+			AND id = #id
+		{/@if}
+	{/@where}
+
+{/#selectById}
+
+
+{#update post}
+	
+	UPDATE post
+	{@set}
+		{@each value="#post"}
+			{@if test="#item"}
+				$key = #item,
+			{/@if}
+		{/@each}
+	{/@set}
+	{@where}
+		{@if test="#post.id"}
+			AND id = #post.id
+		{/@if}
+	{/@where}
+	
+{/#update}
+
