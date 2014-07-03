@@ -1,18 +1,19 @@
 {
 	"name": "mysql-mapper",
 	"description": "mysql mapper",
-	"version": "0.0.1",
+	"version": "0.0.01",
 	"author": "lvyuanjiao <lvyuanjiao@gmail.com>",
 	"contributors": [
 		{
 		  "name": "Lv yuanjiao",
-		  "email": "lvyuanjiao@gmail.com"
+		  "email": "lvyuanjiao@gmail.com",
+		  "url": "http://lvyuanjiao.com"
 		}
 	],
-	"homepage": "",
+	"homepage": "https://github.com/lvyuanjiao/mysql-mapper",
 	"repository": {
 		"type": "git",
-		"url": ""
+		"url": "https://github.com/lvyuanjiao/mysql-mapper"
 	},
 	"keywords": [		
 		"mysql",
