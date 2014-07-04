@@ -50,6 +50,7 @@ describe('Test', function() {
 			mapper.getConnection(function(err, conn){
 				mapper.get('post.selectAll').query(conn, function(err, result) {
 					console.log(result);
+					conn.release();
 					done();
 				});
 			});						
@@ -57,7 +58,28 @@ describe('Test', function() {
 		});
 		
 		
-		it('tx', function(done) {
+		it('tx#object params', function(done) {
+		
+			mapper.tx({
+				'one': function(conn, next) {
+					mapper.get('post.selectAll').query(conn, function(err, result){
+						next(err, result);
+					});
+				},
+				'two': function(conn, next) {
+					mapper.get('post.selectById', 1).query(conn, function(err, result){
+						next(err, result);
+					});
+				}
+			}, function(err, results){
+				console.log(err, results);
+				done();
+			});
+		
+		});
+		
+		
+		it('tx#array params', function(done) {
 		
 			mapper.tx([
 				function(conn, next) {
@@ -78,17 +100,17 @@ describe('Test', function() {
 		});
 		
 
-		it('tx#rollback', function(done) {
+		it('tx#rollback error', function(done) {
 		
 			mapper.tx([
 				function(conn, next) {
 					mapper.get('post.selectAll').query(conn, function(err, result) {
-						next(new Error('Error!'), result);
+						next(err, result);
 					});
 				},
 				function(conn, next) {
 					mapper.get('post.selectById', 1).query(conn, function(err, result){
-						next(err, result);
+						next(new Error('Error!'), result);
 					});
 				}
 			], function(err, results) {

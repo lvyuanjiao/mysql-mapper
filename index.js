@@ -67,12 +67,12 @@ module.exports = (function(){
 					async.series(wrapper, function(err, results){
 			
 						if(err) {
-							return rollback(conn, function(){done(err)});
+							return rollback(conn, function(){done(err, results)});
 						}
 				
 						conn.commit(function(err) {
 							if(err) {
-								return rollback(conn, function(){done(err)});
+								return rollback(conn, function(){done(err, results)});
 							}
 							conn.release();
 							done(null, results);
@@ -91,12 +91,22 @@ module.exports = (function(){
 })();
 
 var wrap = function(tasks, conn){
-	var wrapper = [];
-	tasks.forEach(function(task, i){
-		wrapper[i] = function(callback){
-			task(conn, callback);
-		}
-	});
+	var isArr = isArray(tasks);
+	var wrapper = isArr ? [] : {};
+	
+	if(!isArr) {
+		Object.keys(tasks).forEach(function (key) {
+			wrapper[key] = function(cb){
+				tasks[key](conn, cb);
+			}
+		});		
+	} else {
+		tasks.forEach(function(task, i){
+			wrapper[i] = function(cb){
+				task(conn, cb);
+			}
+		});
+	}	
 	return wrapper;
 };
 
@@ -106,3 +116,7 @@ var rollback = function(conn, callback){
 		return callback && callback();
 	});
 };
+
+function isArray(arr) {
+    return Object.prototype.toString.call(arr) === "[object Array]";
+} 
