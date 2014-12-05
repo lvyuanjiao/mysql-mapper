@@ -1,7 +1,7 @@
 {
 	"name": "mysql-mapper",
 	"description": "mysql mapper",
-	"version": "0.0.02",
+	"version": "0.1.0",
 	"author": "lvyuanjiao <lvyuanjiao@yeah.net>",
 	"contributors": [
 		{
@@ -28,7 +28,6 @@
 		"test": "mocha"
 	},
 	"dependencies": {
-		"async": "*",
 		"mysql": "*",
 		"sql-mapper": "*"
 	},

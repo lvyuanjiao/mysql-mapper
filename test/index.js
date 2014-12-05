@@ -1,9 +1,22 @@
-
 var path = require('path');
 var should = require('should');
 var mapper = require('../index');
 
-var mappersDir = 'mappers';
+var opts = {
+	host: 'localhost',
+	post: 3306,
+	database: 'test',
+	user: 'root',
+	password: 'adminadmin',
+	mappers: path.join(__dirname, 'mappers')
+};
+
+var post = {
+	id: 123456,
+	title: 'Post title',
+	content: 'post content',
+	created: new Date()
+};
 
 function beauty(sql){
 	return sql.replace(/\s+/g, ' ').trim();
@@ -12,111 +25,61 @@ function beauty(sql){
 describe('Test', function() {
 	
 	before(function(done) {
-		mapper.createPool({
-			host: 'localhost',
-			post: 3306,
-			database: 'test',
-			user: 'root',
-			password: 'adminadmin'
-		});
-		mapper.build(path.join(__dirname, mappersDir), function() {
+		mapper().build(opts, function() {
 			done();
 		});
 	});
 	
-	describe('#mapper', function() {
-		
+	describe('#mapper', function() {		
 		
 		it('post#Sql', function(done) {
 			
-			mapper.get('post.selectAll').sql(function(sql, values) {
-				console.log(sql, values);
+			mapper().sql('post.selectById', post.id, function(sql, values) {
+				sql = beauty(sql);
+				sql.should.equal('SELECT * FROM post WHERE id = ?');
+				values.should.eql([123456]);
 				done();
 			});
 		
 		});
 		
-		it('post#query from pool', function(done) {
+		it('post#insert', function(done) {
 			
-			mapper.get('post.selectAll').query(function(err, result) {
-				console.log(result);
+			mapper().query('post.insert', post, function(err, result) {
+				should.not.exist(err);
+				result.insertId.should.not.equal(0);
+				result.affectedRows.should.equal(1);
 				done();
-			});
+			});			
 		
 		});
 		
-		it('post#qury from connection', function(done) {
-		
-			mapper.getConnection(function(err, conn){
-				mapper.get('post.selectAll').query(conn, function(err, result) {
-					console.log(result);
-					conn.release();
-					done();
-				});
-			});						
-		
-		});
-		
-		
-		it('tx#object params', function(done) {
-		
-			mapper.tx({
-				'one': function(conn, next) {
-					mapper.get('post.selectAll').query(conn, function(err, result){
-						next(err, result);
-					});
-				},
-				'two': function(conn, next) {
-					mapper.get('post.selectById', 1).query(conn, function(err, result){
-						next(err, result);
-					});
-				}
-			}, function(err, results){
-				console.log(err, results);
+		it('post#update', function(done) {
+			post.title = 'post title 2';
+			mapper().query('post.update', post, function(err, result) {
+				should.not.exist(err);
+				result.affectedRows.should.equal(1);
 				done();
-			});
+			});			
 		
 		});
 		
-		
-		it('tx#array params', function(done) {
-		
-			mapper.tx([
-				function(conn, next) {
-					mapper.get('post.selectAll').query(conn, function(err, result){
-						next(err, result);
-					});
-				},
-				function(conn, next) {
-					mapper.get('post.selectById', 1).query(conn, function(err, result){
-						next(err, result);
-					});
-				}
-			], function(err, results){
-				console.log(err, results);
+		it('post#selectById', function(done) {
+			mapper().query('post.selectById', post.id, function(err, results) {
+				should.not.exist(err);
+				results.length.should.equal(1);				
 				done();
-			});
+			});			
 		
 		});
 		
+		it('post#deleteById', function(done) {
 
-		it('tx#rollback error', function(done) {
-		
-			mapper.tx([
-				function(conn, next) {
-					mapper.get('post.selectAll').query(conn, function(err, result) {
-						next(err, result);
-					});
-				},
-				function(conn, next) {
-					mapper.get('post.selectById', 1).query(conn, function(err, result){
-						next(new Error('Error!'), result);
-					});
-				}
-			], function(err, results) {
-				console.log(err, results);
+			mapper().query('post.deleteById', post.id, function(err, result) {
+				should.not.exist(err);
+				result.affectedRows.should.equal(1);
 				done();
-			});
+			});			
 		
 		});
 		

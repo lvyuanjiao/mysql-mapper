@@ -1,122 +1,46 @@
-
-var async = require('async');
 var mysql = require('mysql');
 var mapper = require('sql-mapper');
+var pool = {};
 
-module.exports = (function(){
-	
-	var _pool;
+module.exports = function(namespace){
+
+	var ns = namespace || Object.keys(pool)[0] || 'SQL_MAPPER_DEFAULT_KEY';
 	
 	return {
+	
+		build: function(opts, callback){			
+			pool[ns] = mysql.createPool(opts);
+			mapper(ns).build(opts.mappers, callback);
+		},				
 		
-		build: mapper.build,
+		query: function(id, params, done, conn){
 		
-		section: mapper.section,
-		
-		createPool: function(conf){
-			_pool = mysql.createPool(conf);
-		},
-		
-		getPool: function(){
-			return _pool;
-		},
-		
-		getConnection: function(callback) {
-			if(!_pool) {
-				return callback(new Error('Please init pool first use #mapper.createPool(conf)'));
+			if(typeof params === 'function') {
+				conn = done;
+				done = params;
+				params = [];
 			}
-			_pool.getConnection(callback);
-		},
-		
-		get: function(id, args){
-			args = [].concat(args);
-			id = id.split('.');
-			var fn = mapper.get(id[0])[id[1]];
-	
-			return {
-				sql: function(done) {
-					args.push(done);
-					fn.apply(null, args);
-				},
-				query: function(conn, done) {
-					if(typeof conn === 'function'){
-						done = conn;
-						// Use pool directly.
-						conn = _pool;
-					}					
-					args.push(function(sql, values){
-						conn.query(sql, values, done);
-					});
-					fn.apply(null, args);
-				}
-			};
-		},
-		
-		tx: function(tasks, done){
 			
-			_pool.getConnection(function(err, conn){
-	
-				if(err) {
-					return done(err);
-				}
-		
-				var wrapper = wrap(tasks, conn);
-
-				conn.beginTransaction(function(err){
-
-					async.series(wrapper, function(err, results){
-			
-						if(err) {
-							return rollback(conn, function(){done(err, results)});
-						}
-				
-						conn.commit(function(err) {
-							if(err) {
-								return rollback(conn, function(){done(err, results)});
-							}
-							conn.release();
-							done(null, results);
-						});
-			
-					});
-			
-				});		
-	
+			if(!conn) {
+				conn = pool[ns];
+			}
+						
+			mapper(ns).sql(id, params, function(sql, values){				
+				conn.query(sql, values, done);				
 			});
 			
+		},
+		
+		sql: function(id, params, done){
+			mapper(ns).sql(id, params, done);
+		},
+		
+		section: mapper(ns).section,
+		
+		getConnection: function(callback){
+			pool[ns].getConnection(callback);
 		}
 		
 	};
 	
-})();
-
-var wrap = function(tasks, conn){
-	var isArr = isArray(tasks);
-	var wrapper = isArr ? [] : {};
-	
-	if(!isArr) {
-		Object.keys(tasks).forEach(function (key) {
-			wrapper[key] = function(cb){
-				tasks[key](conn, cb);
-			}
-		});		
-	} else {
-		tasks.forEach(function(task, i){
-			wrapper[i] = function(cb){
-				task(conn, cb);
-			}
-		});
-	}	
-	return wrapper;
 };
-
-var rollback = function(conn, callback){
-	conn.rollback(function() {
-		conn.release();
-		return callback && callback();
-	});
-};
-
-function isArray(arr) {
-    return Object.prototype.toString.call(arr) === "[object Array]";
-} 
