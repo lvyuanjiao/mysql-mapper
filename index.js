@@ -1,46 +1,52 @@
+'use strict';
+
 var mysql = require('mysql');
-var mapper = require('sql-mapper');
-var pool = {};
+var Connection = require('./connection');
 
-module.exports = function(namespace){
+function MySQLMapper (opts){
+	this.opts = opts;
+	this.pool = mysql.createPool(opts);
+}
 
-	var ns = namespace || Object.keys(pool)[0] || 'SQL_MAPPER_DEFAULT_KEY';
-	
-	return {
-	
-		build: function(opts, callback){			
-			pool[ns] = mysql.createPool(opts);
-			mapper(ns).build(opts.mappers, callback);
-		},				
-		
-		query: function(id, params, done, conn){
-		
-			if(typeof params === 'function') {
-				conn = done;
-				done = params;
-				params = [];
+MySQLMapper.prototype.connect = function(callback){
+	/*
+	if(this.pool) {
+		this.pool.getConnection(function(err, conn){
+			if(err) {
+				return callback(err);
 			}
-			
-			if(!conn) {
-				conn = pool[ns];
-			}
-						
-			mapper(ns).sql(id, params, function(sql, values){				
-				conn.query(sql, values, done);				
-			});
-			
-		},
-		
-		sql: function(id, params, done){
-			mapper(ns).sql(id, params, done);
-		},
-		
-		section: mapper(ns).section,
-		
-		getConnection: function(callback){
-			pool[ns].getConnection(callback);
+			callback(null, new Connection(conn));
+		});
+	} else {
+		callback(null, new Connection(mysql.createConnection(this.opts)));
+	}
+	*/
+	this.pool.getConnection(function(err, conn){
+		if(err) {
+			return callback(err);
 		}
-		
-	};
-	
+		callback(null, new Connection(conn));
+	});
 };
+
+MySQLMapper.prototype.select = function(err, rows, callback) {
+	callback(err, rows);
+};
+
+MySQLMapper.prototype.selectOne = function(err, rows, callback) {
+	callback(err, rows && rows[0]);
+};
+
+MySQLMapper.prototype.insert = function(err, rows, callback) {	
+	callback(err, rows && (rows.insertId || rows.affectedRows));
+};
+
+MySQLMapper.prototype.update = function(err, rows, callback) {
+	callback(err, rows && rows.affectedRows);
+};
+
+MySQLMapper.prototype.delete = function(err, rows, callback) {
+	callback(err, rows && rows.affectedRows);
+};
+
+module.exports = MySQLMapper;

@@ -1,7 +1,7 @@
 {
 	"name": "mysql-mapper",
 	"description": "mysql mapper",
-	"version": "0.1.0",
+	"version": "0.1.10",
 	"author": "lvyuanjiao <lvyuanjiao@yeah.net>",
 	"contributors": [
 		{
@@ -15,7 +15,7 @@
 		"type": "git",
 		"url": "https://github.com/lvyuanjiao/mysql-mapper"
 	},
-	"keywords": [		
+	"keywords": [
 		"mysql",
 		"mapper",
 		"template",
@@ -25,15 +25,11 @@
 		"node": "*"
 	},
 	"scripts": {
-		"test": "mocha"
 	},
 	"dependencies": {
-		"mysql": "*",
-		"sql-mapper": "*"
+		"mysql": "*"
 	},
 	"devDependencies": {
-		"mocha": "*",
-		"should": "*"
 	},
 	"readmeFilename": "README.md"
 }
