@@ -1,52 +1,38 @@
 'use strict';
 
-var mysql = require('mysql');
-var Connection = require('./connection');
+var MySQLMapper = require('./mysql-mapper');
 
-function MySQLMapper (opts){
-	this.opts = opts;
-	this.pool = mysql.createPool(opts);
+var mappers = {};
+
+function factory(name) {
+    if (!name) {
+        name = Object.keys(mappers)[0];
+    }
+    var mapper = mappers[name];
+    if (!mapper) {
+        throw new Error('Mapper' + (name ? (' name : ' + name) : '') + ' is not exist');
+    }
+    return mapper;
 }
 
-MySQLMapper.prototype.connect = function(callback){
-	/*
-	if(this.pool) {
-		this.pool.getConnection(function(err, conn){
-			if(err) {
-				return callback(err);
-			}
-			callback(null, new Connection(conn));
-		});
-	} else {
-		callback(null, new Connection(mysql.createConnection(this.opts)));
-	}
-	*/
-	this.pool.getConnection(function(err, conn){
-		if(err) {
-			return callback(err);
-		}
-		callback(null, new Connection(conn));
-	});
+factory.create = function(opts, done) {
+
+    opts.namespace = opts.namespace || opts.mysql.database || 'DEFAULT_NAME_SPACE';
+
+    var mapper = new MySQLMapper(opts);
+
+    mapper.build(function(err) {
+
+        if (err) {
+            return done(err);
+        }
+
+        mappers[opts.namespace] = mapper;
+
+        done(null, mapper);
+
+    });
+
 };
 
-MySQLMapper.prototype.select = function(err, rows, callback) {
-	callback(err, rows);
-};
-
-MySQLMapper.prototype.selectOne = function(err, rows, callback) {
-	callback(err, rows && rows[0]);
-};
-
-MySQLMapper.prototype.insert = function(err, rows, callback) {	
-	callback(err, rows && (rows.insertId || rows.affectedRows));
-};
-
-MySQLMapper.prototype.update = function(err, rows, callback) {
-	callback(err, rows && rows.affectedRows);
-};
-
-MySQLMapper.prototype.delete = function(err, rows, callback) {
-	callback(err, rows && rows.affectedRows);
-};
-
-module.exports = MySQLMapper;
+module.exports = factory;

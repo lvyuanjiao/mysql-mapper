@@ -1,13 +1,12 @@
 {
 	"name": "mysql-mapper",
 	"description": "mysql mapper",
-	"version": "0.1.10",
+	"version": "0.2.0",
 	"author": "lvyuanjiao <lvyuanjiao@yeah.net>",
 	"contributors": [
 		{
 		  "name": "Lv yuanjiao",
-		  "email": "lvyuanjiao@yeah.net",
-		  "url": "http://lvyuanjiao.com"
+		  "email": "lvyuanjiao@yeah.net"
 		}
 	],
 	"homepage": "https://github.com/lvyuanjiao/mysql-mapper",
@@ -25,11 +24,15 @@
 		"node": "*"
 	},
 	"scripts": {
+		"test": "mocha"
 	},
 	"dependencies": {
-		"mysql": "*"
+		"mysql": "*",
+		"sql-mapper": "*"
 	},
 	"devDependencies": {
+		"mocha": "*",
+		"should": "*"
 	},
 	"readmeFilename": "README.md"
 }

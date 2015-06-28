@@ -1,0 +1,15 @@
+
+CREATE DATABASE IF NOT EXISTS `blog`;
+
+USE `blog`;
+
+DROP TABLE IF EXISTS `post`;
+
+CREATE TABLE post (
+	`id` INT AUTO_INCREMENT PRIMARY KEY,
+	`title` VARCHAR(320) NOT NULL,
+	`content` TEXT NOT NULL,	
+	`author` VARCHAR(160) NOT NULL,
+	`post_at` DATE NOT NULL,
+	`updated` DATE NULL
+);
