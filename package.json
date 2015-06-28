@@ -34,5 +34,6 @@
 		"mocha": "*",
 		"should": "*"
 	},
-	"readmeFilename": "README.md"
+	"readmeFilename": "README.md",
+	"license": "MIT"
 }
