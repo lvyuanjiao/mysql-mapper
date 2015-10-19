@@ -12,7 +12,7 @@ function MySQLMapper(opts) {
 
 MySQLMapper.prototype.build = function(done) {
     
-    mapper.build({
+    mapper.create({
         namespace: this.opts.namespace,
         dialect: 'mysql',
         mappers: this.opts.mappers
@@ -116,14 +116,11 @@ MySQLMapper.prototype.delete = function(queryName, args, done, conn) {
 MySQLMapper.prototype.transaction = function(tasks, done) {
 
     this.getConnection(function(err, conn) {
-
         if (err) {
             return done(err);
         }
         
         conn.begin(function(err) {
-
-            
             if (err) {
                 conn.release();
                 return done(err);
@@ -135,30 +132,25 @@ MySQLMapper.prototype.transaction = function(tasks, done) {
                     done(e);
                 });
             };
-
             
             series(tasks, function(err, results) {
-
                 if (err) {
                     return rollback(err);
                 }
                 
                 conn.commit(function(err) {
-
                     if (err) {
                         return rollback(err);
                     }
+
                     conn.release();
                     done(err, results);
 
                 });
 
-
             }, conn);
 
-
         });
-        
 
     });
 

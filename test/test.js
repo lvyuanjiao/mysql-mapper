@@ -78,7 +78,7 @@ describe('MySQL Mapper', function() {
         it('#update()', function(done) {
 
             post.updated = new Date();
-            mapper('blog').insert('post.update', post, function(err, affectedRows) {
+            mapper('blog').update('post.update', post, function(err, affectedRows) {
                 should.not.exist(err);
                 affectedRows.should.be.above(0);
                 done();

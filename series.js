@@ -9,6 +9,10 @@ module.exports = function series (tasks, callback, conn) {
     var keys = isArr ? null : Object.keys(tasks);
     var results = isArr ? [] : {};
 
+    if (len === 0) {
+        return callback(null, results);
+    }
+
     var completed = 0;
     var iterate = function () {
 
