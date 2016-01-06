@@ -1,15 +1,14 @@
-
-CREATE DATABASE IF NOT EXISTS `blog`;
-
+DROP DATABASE IF EXISTS `blog`;
+CREATE DATABASE `blog`;
 USE `blog`;
 
-DROP TABLE IF EXISTS `post`;
+SET STORAGE_ENGINE = InnoDB;
 
 CREATE TABLE post (
 	`id` INT AUTO_INCREMENT PRIMARY KEY,
 	`title` VARCHAR(320) NOT NULL,
-	`content` TEXT NOT NULL,	
+	`content` TEXT NOT NULL,
 	`author` VARCHAR(160) NOT NULL,
-	`post_at` DATE NOT NULL,
+	`created` DATE NOT NULL,
 	`updated` DATE NULL
 );

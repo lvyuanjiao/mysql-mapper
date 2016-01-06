@@ -1,39 +1,41 @@
 {
-	"name": "mysql-mapper",
-	"description": "mysql mapper",
-	"version": "0.2.1",
-	"author": "lvyuanjiao <lvyuanjiao@yeah.net>",
-	"contributors": [
-		{
-		  "name": "Lv yuanjiao",
-		  "email": "lvyuanjiao@yeah.net"
-		}
-	],
-	"homepage": "https://github.com/lvyuanjiao/mysql-mapper",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/lvyuanjiao/mysql-mapper"
-	},
-	"keywords": [
-		"mysql",
-		"mapper",
-		"template",
-		"database"
-	],
-	"engines": {
-		"node": "*"
-	},
-	"scripts": {
-		"test": "mocha"
-	},
-	"dependencies": {
-		"mysql": "*",
-		"sql-mapper": "0.2.4"
-	},
-	"devDependencies": {
-		"mocha": "*",
-		"should": "*"
-	},
-	"readmeFilename": "README.md",
-	"license": "MIT"
+  "name": "mysql-mapper",
+  "description": "MySQL adaptor for sql-mapper",
+  "version": "1.0.0",
+  "author": "lvyuanjiao <lvyuanjiao@yeah.net>",
+  "contributors": [{
+    "name": "Lv yuanjiao",
+    "email": "lvyuanjiao@yeah.net"
+  }],
+  "homepage": "https://github.com/lvyuanjiao/mysql-mapper",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lvyuanjiao/mysql-mapper.git"
+  },
+	"bugs": {
+    "url": "https://github.com/lvyuanjiao/mysql-mapper/issues"
+  },
+  "keywords": [
+    "mysql",
+    "mapper",
+    "sql-mapper",
+    "template",
+    "database"
+  ],
+  "engines": {
+    "node": "*"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "mysql": "^2.9.0"
+  },
+  "devDependencies": {
+    "mocha": "^1.18.0",
+    "should": "^7.1.1",
+    "sql-mapper": "^1.0.0"
+  },
+  "readmeFilename": "README.md",
+  "license": "MIT"
 }

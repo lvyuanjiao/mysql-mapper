@@ -1,12 +1,11 @@
 
-{#insert post}
-	INSERT INTO post (title, content, author, post_at)
-	VALUES (#post.title, #post.content, #post.author, #post.post_at)
+{#insert(post)}
+	INSERT INTO post (title, content, author, created)
+	VALUES (#post.title, #post.content, #post.author, #post.created)
 {/insert}
 
-
-{#update post}
-	UPDATE post SET 
+{#update(post)}
+	UPDATE post SET
 		title = #post.title,
 		content = #post.content,
 		updated = #post.updated
@@ -14,21 +13,19 @@
 		id = #post.id
 {/update}
 
-{#selectById id}
+{#selectById(id)}
 	SELECT * FROM post WHERE id = #id
 {/selectById}
-
 
 {#selectAll}
 	SELECT * FROM post
 {/selectAll}
 
-
-{#deleteById postId}
+{#deleteById(postId)}
 	DELETE FROM post WHERE id = #postId
 {/deleteById}
 
-{#deleteAll postId}
+{#deleteAll(postId)}
 	DELETE FROM post
 {/deleteAll}
 
