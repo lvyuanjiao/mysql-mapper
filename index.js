@@ -12,7 +12,7 @@ module.exports = function(opts) {
     pool = mysql.createPool(config);
   }
 
-  function Connection(conn) {
+  function connection(conn) {
     return {
       query: function() {
         conn.query.apply(conn, arguments);
@@ -44,10 +44,10 @@ module.exports = function(opts) {
           if (err) {
             return callback(err);
           }
-          callback(null, new Connection(conn));
+          callback(null, connection(conn));
         });
       } else {
-        callback(null, new Connection(mysql.createConnection(opts.driver)));
+        callback(null, connection(mysql.createConnection(opts.driver)));
       }
     },
     select: function (rows) {
