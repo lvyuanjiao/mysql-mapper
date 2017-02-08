@@ -3,7 +3,6 @@
 var mysql = require('mysql');
 
 module.exports = function(opts) {
-
   var pool = null;
   if (opts.pool) {
     var config = {};
@@ -41,9 +40,7 @@ module.exports = function(opts) {
     connect: function(callback) {
       if (pool) {
         pool.getConnection(function(err, conn) {
-          if (err) {
-            return callback(err);
-          }
+          if (err) { return callback(err); }
           callback(null, connection(conn));
         });
       } else {
@@ -60,7 +57,7 @@ module.exports = function(opts) {
       return result.insertId || result.affectedRows;
     },
     update: function(result) {
-      return result.affectedRows;
+      return result.changedRows || result.affectedRows;
     },
     delete: function(result) {
       return result.affectedRows;
