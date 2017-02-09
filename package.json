@@ -1,7 +1,7 @@
 {
   "name": "mysql-mapper",
   "description": "MySQL adaptor for sql-mapper",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "lvyuanjiao <lvyuanjiao@yeah.net>",
   "contributors": [{
     "name": "Lv yuanjiao",

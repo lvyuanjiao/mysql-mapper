@@ -82,21 +82,21 @@ describe('MySQL Mapper', function() {
   describe('Transaction', function() {
     it('#commit', function(done) {
       var testMapper = mapper();
-      testMapper.begin().then(function(conn) {
-        testMapper.insert(conn, 'post.insert', post)
+      testMapper.begin().then(function(tx) {
+        tx.insert('post.insert', post)
           .then(function(postId) {
             postId.should.be.a.Number();
             post.id = postId;
             post.updated = new Date();
-            return testMapper.update(conn, 'post.update', post);
+            return tx.update('post.update', post);
           })
           .then(function(changedRows){
             changedRows.should.be.above(0);
-            return testMapper.delete(conn, 'post.deleteById', post.id);
+            return tx.delete('post.deleteById', post.id);
           })
           .then(function(affectedRows){
             affectedRows.should.be.ok();
-            return testMapper.commit(conn);
+            return tx.commit();
           })
           .then(done)
           .catch(done);
@@ -105,21 +105,21 @@ describe('MySQL Mapper', function() {
 
     it('#rollback', function(done) {
       var testMapper = mapper();
-      testMapper.begin().then(function(conn) {
-        testMapper.insert(conn, 'post.insert', post)
+      testMapper.begin().then(function(tx) {
+        tx.insert('post.insert', post)
           .then(function(postId) {
             postId.should.be.a.Number();
             post.id = postId;
             post.updated = new Date();
-            return testMapper.select(conn, 'post.errorQuery', post);
+            return tx.select('post.errorQuery', post);
           })
           .then(function(){
-            return testMapper.commit(conn);
+            return tx.commit();
           })
           .then(done)
-          .catch(function(err){
+          .catch(function(err) {
             should.exist(err);
-            testMapper.rollback(conn).then(function(){
+            tx.rollback().then(function() {
               done();
             });
           });
